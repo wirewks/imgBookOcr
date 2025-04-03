@@ -26,7 +26,8 @@ def main():
     images = sorted([os.path.join(directory, f) for f in os.listdir(directory)
                      if f.lower().endswith(image_extensions)])
     
-    all_text = ""
+    # Replace string accumulation with a list for better join performance
+    all_text_list = []
     for idx, image_path in enumerate(images, start=1):
         print(f"Processing image {idx}/{len(images)}")
         try:
@@ -43,9 +44,12 @@ def main():
                 lang='jpn+jpn_vert',
                 config=custom_config
             )
-            all_text += text + "\n"
+            all_text_list.append(text)
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
+    
+    # 結果を結合
+    all_text = "\n".join(all_text_list)
     
     # Ensure output directory exists
     os.makedirs("output", exist_ok=True)
