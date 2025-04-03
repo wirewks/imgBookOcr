@@ -4,6 +4,11 @@ from PIL import Image
 import pytesseract
 import datetime
 
+def preprocess_image(image):
+    # グレースケール変換
+    image = image.convert('L')
+    return image
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python ocr_script.py <directory>")
@@ -25,7 +30,19 @@ def main():
     for idx, image_path in enumerate(images, start=1):
         print(f"Processing image {idx}/{len(images)}")
         try:
-            text = pytesseract.image_to_string(Image.open(image_path), lang='jpn+jpn_vert')
+            # 画像を開いて前処理
+            image = Image.open(image_path)
+            processed_image = preprocess_image(image)
+            
+            # 最適化された設定
+            custom_config = r'--oem 1 --psm 6 -c preserve_interword_spaces=1'
+            
+            # OCR実行
+            text = pytesseract.image_to_string(
+                processed_image, 
+                lang='jpn+jpn_vert',
+                config=custom_config
+            )
             all_text += text + "\n"
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
