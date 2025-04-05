@@ -66,20 +66,26 @@ def main():
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
     
-    # 結果を結合
-    all_text = "\n".join(all_text_list)
-    
     # Ensure output directory exists
     os.makedirs("output", exist_ok=True)
     
     # Create a unique filename with timestamp
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_filename = f"output/output_{timestamp}.txt"
     
-    with open(output_filename, "w", encoding="utf-8") as out_file:
-        out_file.write(all_text)
-    
-    print(f"OCR extraction complete. Output saved to {output_filename}.")
+    # 結果を分割して保存
+    chunk_size = 25
+    for i in range(0, len(all_text_list), chunk_size):
+        part_text = "\n".join(all_text_list[i:i + chunk_size])
+        part_number = i // chunk_size + 1
+        part_filename = f"output/output_{timestamp}_part_{part_number}.txt"
+        try:
+            with open(part_filename, "w", encoding="utf-8") as part_file:
+                part_file.write(part_text)
+            print(f"Successfully wrote to {part_filename}")
+        except Exception as e:
+            print(f"Failed to write to {part_filename}: {e}")
+
+    print(f"OCR extraction complete. Output saved to {len(all_text_list) // chunk_size + 1} parts.")
 
 if __name__ == "__main__":
     main()
