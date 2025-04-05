@@ -14,3 +14,5 @@
 
 $ curl -LO https://github.com/tesseract-ocr/tessdata_best/raw/main/jpn.traineddata
 $ curl -LO https://github.com/tesseract-ocr/tessdata_best/raw/main/jpn_vert.traineddata
+
+[VS code agent settings](https://code.visualstudio.com/updates/v1_99)
